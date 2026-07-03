@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>КП Рольставни — ИП Папикян</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar no-print">
+    <div>
+      <h1>Создание КП</h1>
+      <p>ИП Папикян Торгом Мовсесович</p>
+    </div>
+    <button id="btnPrintTop" class="secondary">PDF</button>
+  </header>
+
+  <main class="app">
+    <section class="panel no-print">
+      <h2>1. Данные клиента</h2>
+      <div class="grid two">
+        <label>Номер КП<input id="kpNumber" placeholder="КП-001" /></label>
+        <label>Дата<input id="kpDate" type="date" /></label>
+        <label>Клиент<input id="clientName" placeholder="ООО / ИП / ФИО клиента" /></label>
+        <label>Телефон клиента<input id="clientPhone" placeholder="+7 ..." /></label>
+        <label class="wide">Адрес объекта<textarea id="objectAddress" placeholder="Город, улица, дом"></textarea></label>
+        <label>Менеджер<input id="manager" value="Папикян Мовсес" /></label>
+        <label>Условия оплаты<input id="paymentTerms" value="50% предоплата / 50% по готовности" /></label>
+        <label>Срок поставки<input id="deliveryTime" value="от 3 до 10 рабочих дней" /></label>
+      </div>
+    </section>
+
+    <section class="panel no-print">
+      <h2>2. Добавить услугу / товар</h2>
+      <div class="grid two">
+        <label>Услуга
+          <select id="serviceName">
+            <option>Рольставни металлические</option>
+            <option>Рольставни алюминиевые</option>
+            <option>Роллетные ворота</option>
+            <option>Откатные ворота</option>
+            <option>Секционные ворота</option>
+            <option>Автоматика для ворот</option>
+            <option>Управление</option>
+            <option>Пульт управления</option>
+            <option>Блок управления</option>
+            <option>Монтаж</option>
+            <option>Доставка</option>
+            <option>Замер</option>
+            <option>Ремонт</option>
+            <option>Другое</option>
+          </select>
+        </label>
+        <label>Тип управления
+          <select id="controlType">
+            <option value="">Не выбрано</option>
+            <option>Ручное управление</option>
+            <option>Электропривод</option>
+            <option>Пульт дистанционного управления</option>
+            <option>Кнопочный выключатель</option>
+            <option>Замковый выключатель</option>
+            <option>Блок управления</option>
+            <option>Wi-Fi / умное управление</option>
+            <option>Групповое управление</option>
+          </select>
+        </label>
+        <label>Модель / профиль<input id="model" placeholder="Например: AER44, RH77, DoorHan" /></label>
+        <label>Ширина, мм<input id="width" type="number" inputmode="numeric" placeholder="2000" /></label>
+        <label>Высота, мм<input id="height" type="number" inputmode="numeric" placeholder="1200" /></label>
+        <label>Цвет<input id="color" placeholder="Белый / коричневый / черный" /></label>
+        <label>Количество<input id="qty" type="number" inputmode="numeric" value="1" min="1" /></label>
+        <label>Цена за ед., ₽<input id="price" type="number" inputmode="decimal" placeholder="50000" /></label>
+        <label class="wide">Примечание<textarea id="note" placeholder="Дополнительные условия, особенности объекта"></textarea></label>
+      </div>
+      <div class="actions">
+        <button id="addItem">Добавить в КП</button>
+        <button id="clearItem" class="secondary">Очистить поля услуги</button>
+      </div>
+    </section>
+
+    <section class="panel no-print">
+      <h2>3. Действия с КП</h2>
+      <div class="actions">
+        <button id="btnSaveKp" class="primary">Сохранить КП в историю</button>
+        <button id="btnPrint" class="success">Скачать / сохранить PDF</button>
+        <button id="clearAll" class="danger">Очистить всё КП</button>
+      </div>
+      <p class="hint">Позиции редактируются прямо в самом КП ниже: нажмите на название, описание, количество или цену и измените текст. Кнопки удаления в таблице не попадают в PDF.</p>
+    </section>
+
+    <section class="panel no-print">
+      <h2>4. Сохранённые КП</h2>
+      <div id="historyList" class="history-list"></div>
+      <div class="actions">
+        <button id="newKp" class="secondary">Новое КП</button>
+        <button id="clearHistory" class="danger">Очистить историю</button>
+      </div>
+      <p class="hint">История сохраняется в браузере на этом устройстве. Если открыть сайт на другом телефоне, история там будет отдельная.</p>
+    </section>
+
+    <section id="kpDocument" class="document">
+      <div class="doc-head">
+        <div class="brand-box">РОЛЬСТАВНИ<br><span>ворота • монтаж • сервис</span></div>
+        <div class="seller">
+          <strong>ИП Папикян Торгом Мовсесович</strong><br>
+          ОГРНИП 320508100305479 от 21.09.2020<br>
+          ИНН 461108842074<br>
+          Московская область, город Люберцы<br>
+          Тел.: +7 925 189 99 10
+        </div>
+      </div>
+
+      <h2 class="doc-title">Коммерческое предложение № <span data-bind="kpNumber" data-edit-field="kpNumber" contenteditable="true">КП-001</span></h2>
+
+      <div class="doc-info">
+        <div><b>Дата:</b> <span data-bind="kpDateText" data-edit-field="kpDate" contenteditable="true"></span></div>
+        <div><b>Клиент:</b> <span data-bind="clientName" data-edit-field="clientName" contenteditable="true"></span></div>
+        <div><b>Телефон:</b> <span data-bind="clientPhone" data-edit-field="clientPhone" contenteditable="true"></span></div>
+        <div><b>Адрес объекта:</b> <span data-bind="objectAddress" data-edit-field="objectAddress" contenteditable="true"></span></div>
+        <div><b>Менеджер:</b> <span data-bind="manager" data-edit-field="manager" contenteditable="true"></span></div>
+        <div><b>Срок поставки:</b> <span data-bind="deliveryTime" data-edit-field="deliveryTime" contenteditable="true"></span></div>
+        <div class="wide"><b>Условия оплаты:</b> <span data-bind="paymentTerms" data-edit-field="paymentTerms" contenteditable="true"></span></div>
+      </div>
+
+      <table class="kp-table">
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Наименование</th>
+            <th>Размер / описание</th>
+            <th>Кол-во</th>
+            <th>Цена, ₽</th>
+            <th>Сумма, ₽</th>
+            <th class="no-print edit-col">Действие</th>
+          </tr>
+        </thead>
+        <tbody id="kpRows">
+          <tr class="empty"><td colspan="6">Добавьте услуги через форму выше</td></tr>
+        </tbody>
+      </table>
+
+      <div class="totals">
+        <div><span>Итого:</span><strong id="totalSum">0 ₽</strong></div>
+      </div>
+
+      <div class="conditions">
+        <h3>Условия</h3>
+        <p>Стоимость указана с учётом выбранных товаров и услуг. Точная цена может корректироваться после замера и согласования комплектации.</p>
+        <p>Доставка, монтаж, автоматика, управление и дополнительные работы добавляются отдельными позициями в таблицу КП.</p>
+      </div>
+
+      <div class="sign">
+        <div>Менеджер: __________________ / Папикян Мовсес /</div>
+        <div>Печать / подпись</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
