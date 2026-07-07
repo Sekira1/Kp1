@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Генератор КП</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">ИП Папикян Торгом Мовсесович</p>
+          <h1>Коммерческое предложение</h1>
+        </div>
+        <div class="actions">
+          <button class="icon-button" id="newOfferBtn" type="button" title="Новое КП" aria-label="Новое КП">
+            <span aria-hidden="true">+</span>
+          </button>
+          <button class="secondary-button" id="saveBtn" type="button">Сохранить</button>
+        </div>
+      </header>
+
+      <div class="layout">
+        <form class="editor" id="offerForm">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Данные КП</h2>
+              <span id="saveStatus">Не сохранено</span>
+            </div>
+            <div class="grid two">
+              <label>
+                Номер КП
+                <input id="offerNumber" name="offerNumber" autocomplete="off">
+              </label>
+              <label>
+                Дата
+                <input id="offerDate" name="offerDate" type="date">
+              </label>
+            </div>
+            <label>
+              Заказчик
+              <input id="customer" name="customer" placeholder="ООО «Заказчик» или ФИО">
+            </label>
+            <label>
+              Контакт заказчика
+              <input id="customerContact" name="customerContact" placeholder="Телефон, email или адрес">
+            </label>
+            <label>
+              Тема / назначение
+              <input id="subject" name="subject" placeholder="Поставка товара, услуга, проект">
+            </label>
+            <label>
+              Вступительный текст
+              <textarea id="intro" name="intro" rows="4"></textarea>
+            </label>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Позиции</h2>
+              <button class="secondary-button compact" id="addItemBtn" type="button">Добавить</button>
+            </div>
+            <div id="items" class="items"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Скидка</h2>
+              <span>Если скидки нет, в КП она не появится</span>
+            </div>
+            <div class="grid two">
+              <label>
+                Тип скидки
+                <select id="discountType" name="discountType">
+                  <option value="percent">Проценты</option>
+                  <option value="amount">Рубли</option>
+                </select>
+              </label>
+              <label>
+                Размер скидки
+                <input id="discountValue" name="discountValue" type="number" min="0" step="0.01" placeholder="0">
+              </label>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="grid three">
+              <label>
+                Срок действия КП
+                <input id="validUntil" name="validUntil" placeholder="Например: 10 рабочих дней">
+              </label>
+              <label>
+                Условия оплаты
+                <input id="paymentTerms" name="paymentTerms" placeholder="100% предоплата">
+              </label>
+              <label>
+                Гарантия
+                <input id="guaranteeTerms" name="guaranteeTerms" placeholder="1 год">
+              </label>
+            </div>
+            <label>
+              Дополнительные условия
+              <textarea id="notes" name="notes" rows="3" placeholder="Срок поставки, доставка, гарантия"></textarea>
+            </label>
+          </section>
+          <p class="validation-message" id="validationMessage"></p>
+        </form>
+
+        <aside class="history-panel">
+          <div class="panel-head">
+            <h2>История</h2>
+            <button class="ghost-button" id="clearHistoryBtn" type="button">Очистить</button>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="preview-wrap">
+      <div class="preview-toolbar">
+        <div>
+          <span>Готовый документ</span>
+          <strong>PDF для заказчика</strong>
+        </div>
+        <button class="primary-button download-button" id="printBtn" type="button">Скачать PDF</button>
+      </div>
+      <article class="preview-page" id="printArea">
+        <header class="doc-header">
+          <div>
+            <h2>Коммерческое предложение</h2>
+            <p class="doc-meta" id="docMeta"></p>
+          </div>
+        </header>
+
+        <div class="doc-grid">
+          <section>
+            <h3>Исполнитель</h3>
+            <p><strong>ИП Папикян Торгом Мовсесович</strong></p>
+            <p>ОГРНИП: 320508100305479</p>
+            <p>ИНН: 461108842074</p>
+          </section>
+          <section>
+            <h3>Заказчик</h3>
+            <p id="docCustomer"></p>
+            <p id="docContact"></p>
+          </section>
+        </div>
+
+        <section class="doc-section">
+          <h3 id="docSubject"></h3>
+          <p id="docIntro"></p>
+        </section>
+
+        <div class="table-scroll">
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Наименование и описание</th>
+                <th>Кол-во</th>
+                <th>Цена</th>
+                <th>Сумма</th>
+              </tr>
+            </thead>
+            <tbody id="docItems"></tbody>
+          </table>
+        </div>
+
+        <div class="totals">
+          <div class="total-line subtotal-line" id="docSubtotalRow" hidden>
+            <span>Сумма без скидки:</span>
+            <strong id="docSubtotal"></strong>
+          </div>
+          <div class="total-line discount-line" id="docDiscountRow" hidden>
+            <span>Скидка:</span>
+            <strong id="docDiscount"></strong>
+          </div>
+          <div class="total-line grand-total">
+            <span>Итого:</span>
+            <strong id="docTotal"></strong>
+          </div>
+        </div>
+
+        <section class="doc-section conditions">
+          <h3>Условия</h3>
+          <p><strong>Срок действия:</strong> <span id="docValidUntil"></span></p>
+          <p><strong>Оплата:</strong> <span id="docPaymentTerms"></span></p>
+          <p><strong>Гарантия:</strong> <span id="docGuarantee"></span></p>
+          <p id="docNotes"></p>
+        </section>
+
+        <footer class="doc-footer">
+          <div>
+            <p>С уважением,</p>
+            <strong>ИП Папикян Т.М.</strong>
+          </div>
+          <div class="signature-line"></div>
+        </footer>
+      </article>
+    </section>
+  </main>
+
+  <div class="mobile-action-bar" aria-label="Быстрые действия">
+    <button class="secondary-button" id="mobileSaveBtn" type="button">Сохранить</button>
+    <button class="primary-button" id="mobilePrintBtn" type="button">PDF</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
